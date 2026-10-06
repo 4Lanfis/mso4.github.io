@@ -1,0 +1,1058 @@
+<!DOCTYPE html>
+<html lang="de" class="h-full bg-slate-950 text-slate-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Smile & Peil - GCBY3GA (Geocache-Serie)</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <!-- Tone.js for Sound Engine -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Inter:wght@400;600;800&display=swap');
+    
+    body {
+      font-family: 'Inter', sans-serif;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      background-color: #090d16;
+    }
+    
+    .font-party {
+      font-family: 'Fredoka', cursive, sans-serif;
+    }
+
+    /* Seamless continuous linear ship animation keyframes */
+    @keyframes shipSailRight {
+      0% { left: -140px; transform: translateY(0px) rotate(-1deg); }
+      50% { transform: translateY(-6px) rotate(2deg); }
+      100% { left: calc(100% + 140px); transform: translateY(0px) rotate(-1deg); }
+    }
+
+    @keyframes shipSailLeft {
+      0% { left: calc(100% + 140px); transform: translateY(0px) rotate(2deg); }
+      50% { transform: translateY(-8px) rotate(-2deg); }
+      100% { left: -140px; transform: translateY(0px) rotate(1deg); }
+    }
+
+    @keyframes shipCruiseRight {
+      0% { left: -140px; transform: translateY(0px) rotate(-2deg); }
+      50% { transform: translateY(-5px) rotate(2deg); }
+      100% { left: calc(100% + 140px); transform: translateY(0px) rotate(-1deg); }
+    }
+
+    @keyframes shipCruiseLeft {
+      0% { left: calc(100% + 140px); transform: translateY(0px) rotate(2deg); }
+      50% { transform: translateY(-6px) rotate(-2deg); }
+      100% { left: -140px; transform: translateY(0px) rotate(1deg); }
+    }
+
+    @keyframes shipBob {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(3deg); }
+    }
+
+    .animate-ship-1 { animation: shipSailRight 14s linear infinite; }
+    .animate-ship-2 { animation: shipSailLeft 18s linear infinite; }
+    .animate-ship-3 { animation: shipSailRight 22s linear infinite; }
+    .animate-ship-4 { animation: shipSailLeft 12s linear infinite; }
+    .animate-ship-5 { animation: shipSailRight 20s linear infinite; }
+    .animate-ship-6 { animation: shipSailLeft 15s linear infinite; }
+    .animate-ship-7 { animation: shipSailRight 23s linear infinite; }
+    .animate-ship-8 { animation: shipSailLeft 16s linear infinite; }
+    .animate-ship-9 { animation: shipSailRight 26s linear infinite; }
+    .animate-ship-10 { animation: shipSailLeft 11s linear infinite; }
+
+    .animate-cruise-right-1 { animation: shipCruiseRight 9s linear infinite; }
+    .animate-cruise-right-2 { animation: shipCruiseRight 14s linear infinite; }
+    .animate-cruise-left-1 { animation: shipCruiseLeft 11s linear infinite; }
+    .animate-cruise-left-2 { animation: shipCruiseLeft 16s linear infinite; }
+
+    .animate-ship-bob {
+      animation: shipBob 3.5s ease-in-out infinite;
+    }
+
+    .compass-dial {
+      transition: transform 0.15s ease-out;
+    }
+
+    /* Glow & Filter for Ships */
+    .ship-glow {
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 10px rgba(250, 204, 21, 0.7));
+    }
+
+    /* Solid Colorful Card Styling */
+    .party-card {
+      position: relative;
+      overflow: hidden;
+      background-color: #0f172a;
+      border: 4px solid #facc15;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 25px rgba(250, 204, 21, 0.4);
+    }
+
+    @keyframes waveRipples {
+      0% { transform: translateX(0) translateY(0); }
+      50% { transform: translateX(-12px) translateY(-3px); }
+      100% { transform: translateX(0) translateY(0); }
+    }
+
+    .wave-bg {
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.5) 0%, rgba(6, 182, 212, 0.25) 50%, rgba(30, 58, 138, 0.7) 100%);
+      animation: waveRipples 6s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-100 flex flex-col justify-between overflow-x-hidden relative selection:bg-pink-500 selection:text-white">
+
+  <header class="w-full border-b-4 border-yellow-400 bg-slate-900 sticky top-0 z-50 px-4 py-3 shadow-2xl">
+    <div class="max-w-md mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-2.5">
+        <div class="w-10 h-10 rounded-2xl bg-yellow-400 border-2 border-slate-950 flex items-center justify-center text-slate-950 text-xl font-black shadow-lg animate-ship-bob">
+          🚢
+        </div>
+        <div>
+          <h1 class="font-party text-xl font-bold text-yellow-300">Smile & Peil</h1>
+          <p class="text-[10px] text-cyan-300 font-extrabold tracking-wider uppercase">GCBY3GA Party Edition</p>
+        </div>
+      </div>
+      
+      <!-- Sound Toggle Button -->
+      <button id="musicToggleBtn" class="px-3.5 py-2 rounded-xl bg-pink-600 border-2 border-yellow-300 text-white hover:bg-pink-500 text-xs font-black transition flex items-center gap-1.5 active:scale-95 shadow-md">
+        <i id="musicIcon" class="fa-solid fa-compact-disc animate-spin"></i>
+        <span id="musicText">Disco-Sound: AUS</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Interactive Area -->
+  <main class="max-w-md w-full mx-auto p-4 flex-1 flex flex-col justify-center my-2 z-10 relative">
+
+    <section id="stationQuiz" class="party-card rounded-3xl p-5 md:p-6 shadow-2xl transition-all duration-300">
+      
+      <!-- Animated Ships Armada Background -->
+      <div class="absolute inset-0 overflow-hidden pointer-events-none z-0 opacity-100 ship-glow">
+        <div class="absolute top-1 left-0 animate-ship-1" style="animation-delay: -2s;">
+          <svg width="95" height="60" viewBox="0 0 120 80" fill="none"><path d="M10 45 L105 45 L90 70 L25 70 Z" fill="#ec4899" stroke="#facc15" stroke-width="4"/><rect x="25" y="28" width="60" height="17" rx="3" fill="#06b6d4" stroke="#ffffff" stroke-width="2"/><rect x="35" y="16" width="35" height="12" rx="2" fill="#eab308"/><circle cx="35" cy="56" r="3.5" fill="#facc15"/><circle cx="50" cy="56" r="3.5" fill="#facc15"/><polygon points="20,10 32,15 20,20" fill="#a855f7"/></svg>
+        </div>
+        <div class="absolute top-5 left-0 animate-ship-4" style="animation-delay: -6s;">
+          <svg width="85" height="50" viewBox="0 0 90 50" fill="none"><path d="M5 25 L80 22 L70 42 L15 42 Z" fill="#10b981" stroke="#facc15" stroke-width="3"/><circle cx="30" cy="20" r="8" fill="#3b82f6"/><polygon points="50,10 65,20 50,20" fill="#facc15"/></svg>
+        </div>
+        <div class="absolute top-10 left-0 animate-ship-8" style="animation-delay: -11s;">
+          <svg width="90" height="55" viewBox="0 0 110 65" fill="none"><path d="M10 38 L100 38 L85 58 L20 58 Z" fill="#f97316" stroke="#ffffff" stroke-width="3"/><rect x="30" y="18" width="45" height="18" rx="3" fill="#06b6d4" stroke="#facc15" stroke-width="2"/></svg>
+        </div>
+        <div class="absolute top-16 left-0 animate-ship-2" style="animation-delay: -9s;">
+          <svg width="100" height="70" viewBox="0 0 120 90" fill="none"><path d="M15 55 L105 55 L85 80 L30 80 Z" fill="#3b82f6" stroke="#06b6d4" stroke-width="4"/><polygon points="55,10 55,50 95,50" fill="#facc15" stroke="#ef4444" stroke-width="3"/><polygon points="50,15 50,50 15,50" fill="#ec4899" stroke="#ffffff" stroke-width="3"/></svg>
+        </div>
+        <div class="absolute top-24 left-0 animate-ship-5" style="animation-delay: -4s;">
+          <svg width="95" height="55" viewBox="0 0 110 55" fill="none"><rect x="10" y="35" width="85" height="12" rx="4" fill="#a855f7" stroke="#facc15" stroke-width="3"/><polygon points="50,5 85,32 15,32" fill="#06b6d4" stroke="#ffffff" stroke-width="3"/></svg>
+        </div>
+        <div class="absolute top-32 left-0 animate-ship-6" style="animation-delay: -13s;">
+          <svg width="90" height="55" viewBox="0 0 100 65" fill="none"><path d="M10 35 L90 35 L75 58 L20 58 Z" fill="#14b8a6" stroke="#facc15" stroke-width="3"/><rect x="35" y="15" width="25" height="20" fill="#f97316" stroke="#ffffff" stroke-width="2"/></svg>
+        </div>
+        <div class="absolute top-1/2 left-0 animate-ship-3" style="animation-delay: -7s;">
+          <svg width="105" height="60" viewBox="0 0 125 75" fill="none"><path d="M15 45 L110 45 L95 68 L25 68 Z" fill="#8b5cf6" stroke="#06b6d4" stroke-width="4"/><circle cx="62" cy="48" r="14" fill="#facc15" stroke="#ffffff" stroke-width="2"/><rect x="30" y="25" width="65" height="15" rx="2" fill="#ec4899"/></svg>
+        </div>
+        <div class="absolute bottom-6 left-0 animate-ship-4" style="animation-delay: -1s;">
+          <svg width="90" height="50" viewBox="0 0 90 50" fill="none"><path d="M5 25 L80 22 L70 42 L15 42 Z" fill="#ef4444" stroke="#facc15" stroke-width="3"/><circle cx="30" cy="20" r="8" fill="#06b6d4"/><polygon points="50,10 65,20 50,20" fill="#facc15"/></svg>
+        </div>
+      </div>
+
+      <div class="relative z-10">
+        <!-- Dedicated Ocean Channel Banner -->
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-b from-slate-950/90 via-blue-950/90 to-cyan-950/90 border-4 border-yellow-400 p-5 mb-5 shadow-2xl text-center group">
+          <div class="absolute inset-0 wave-bg pointer-events-none z-0"></div>
+
+          <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden ship-glow">
+            <div class="absolute top-1 left-0 animate-cruise-left-1" style="animation-delay: 0s;">
+              <svg width="85" height="50" viewBox="0 0 120 70" fill="none">
+                <path d="M10 40 L110 40 L95 62 L25 62 Z" fill="#ec4899" stroke="#facc15" stroke-width="3"/>
+                <rect x="30" y="22" width="55" height="18" rx="3" fill="#06b6d4" stroke="#ffffff" stroke-width="2"/>
+                <circle cx="40" cy="50" r="3" fill="#facc15"/>
+                <circle cx="55" cy="50" r="3" fill="#facc15"/>
+                <polygon points="20,10 35,16 20,22" fill="#eab308"/>
+              </svg>
+            </div>
+
+            <div class="absolute top-12 left-0 animate-cruise-right-1" style="animation-delay: -3s;">
+              <svg width="100" height="60" viewBox="0 0 130 80" fill="none">
+                <path d="M15 48 L115 48 L95 72 L30 72 Z" fill="#3b82f6" stroke="#06b6d4" stroke-width="4"/>
+                <polygon points="60,10 60,48 100,48" fill="#facc15" stroke="#ef4444" stroke-width="3"/>
+                <polygon points="55,15 55,48 20,48" fill="#ec4899" stroke="#ffffff" stroke-width="3"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="relative z-10 py-1">
+            <div class="inline-flex items-center justify-center bg-slate-950/80 backdrop-blur-md px-4 py-1.5 rounded-full border-2 border-yellow-400 mb-2 shadow-lg animate-ship-bob max-w-full">
+              <h2 class="text-2xl sm:text-3xl font-party font-bold text-yellow-300 drop-shadow-[0_2px_8px_rgba(0,0,0,1)] flex items-center justify-center gap-2 whitespace-nowrap">
+                <span>🚢</span> Smile & Peil ⚓
+              </h2>
+            </div>
+            
+            <div class="bg-slate-950/85 backdrop-blur-md p-3 rounded-xl border border-cyan-400/50 shadow-md">
+              <p class="text-slate-100 text-base md:text-lg font-bold leading-relaxed drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+                Die MS. - Osterwick war nicht eindeutig von der Art und auch nicht vom Namen...
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic Start-Koordinaten Display -->
+        <div class="bg-indigo-950/80 backdrop-blur-md border-4 border-cyan-400 rounded-2xl p-3.5 mb-5 text-center shadow-lg transform -rotate-1 hover:rotate-0 transition-transform">
+          <div class="flex items-center justify-center gap-2 text-xs font-black text-yellow-300 uppercase tracking-widest mb-1">
+            <i class="fa-solid fa-location-crosshairs text-pink-500 animate-bounce"></i>
+            <span>Start-Koordinaten</span>
+          </div>
+          <div class="flex items-center justify-center gap-2">
+            <button id="copyCoordsBtn" title="Klicken zum Kopieren" class="font-mono text-xs sm:text-sm font-black tracking-wider text-cyan-300 bg-slate-950 hover:bg-slate-900 active:scale-95 py-2 px-3.5 rounded-xl border-2 border-yellow-400 inline-flex items-center justify-between gap-3 shadow-inner transition cursor-pointer w-full sm:w-auto">
+              <span id="xcoordsDisplay" class="flex flex-col text-left leading-tight"></span>
+              <span class="bg-yellow-400 text-slate-950 text-xs px-2.5 py-1 rounded-lg font-black uppercase flex items-center gap-1 shadow hover:bg-yellow-300 transition">
+                <i class="fa-regular fa-copy"></i> Kopieren
+              </span>
+            </button>
+          </div>
+          <p class="text-[11px] text-slate-300 mt-1.5 font-bold">Startpunkt GCBY3GA für Peilung</p>
+        </div>
+
+        <!-- Quiz Box 1 -->
+        <div class="bg-slate-900/80 backdrop-blur-md rounded-2xl p-4 border-2 border-pink-500 mb-5 shadow-inner">
+          <label for="answerInput" class="block text-cyan-300 font-extrabold mb-2 text-center text-sm md:text-base">
+            Wie hätte die MS. - Osterwick auch heissen können?
+          </label>
+          
+          <input type="text" id="answerInput" placeholder="Dein Namens-Tipp..." 
+            class="w-full bg-slate-950 border-3 border-yellow-400 rounded-xl px-4 py-3 text-center text-base font-black text-yellow-300 placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/40 transition-all mb-3 shadow-md"
+            autocomplete="off">
+          
+          <button id="submitQuizBtn" class="w-full bg-yellow-400 hover:bg-yellow-300 active:scale-95 text-slate-950 font-black py-3.5 px-6 rounded-xl border-2 border-slate-950 shadow-xl transition flex items-center justify-center gap-2 text-base">
+            <span>Antwort prüfen & weiter zur Peilung</span>
+            <i class="fa-solid fa-circle-arrow-right text-lg"></i>
+          </button>
+
+          <div id="quizFeedback" class="hidden mt-3 p-3 rounded-xl text-center text-xs font-bold transition-all"></div>
+        </div>
+
+        <div class="bg-purple-950/80 backdrop-blur-md rounded-2xl p-3.5 border-2 border-pink-500 flex items-center justify-center gap-2.5 shadow-md text-center">
+          <span id="smileEmoji" class="text-2xl animate-bounce shrink-0">🤩</span>
+          <span class="text-xs font-black text-yellow-300 leading-snug">
+            Wenn man das vor Ort sieht<br>hat man sofort Spaß auf den Backen!
+          </span>
+        </div>
+      </div>
+
+    </section>
+
+    <section id="stationPeil" class="hidden party-card rounded-3xl p-5 md:p-6 shadow-2xl transition-all duration-300">
+      
+      <div class="absolute inset-0 overflow-hidden pointer-events-none z-0 opacity-100 ship-glow">
+        <div class="absolute top-1 left-0 animate-ship-1" style="animation-delay: -5s;">
+          <svg width="90" height="55" viewBox="0 0 110 65" fill="none"><path d="M10 38 L100 38 L85 58 L20 58 Z" fill="#ec4899" stroke="#facc15" stroke-width="3"/><rect x="30" y="18" width="45" height="18" rx="3" fill="#06b6d4" stroke="#ffffff" stroke-width="2"/></svg>
+        </div>
+        <div class="absolute top-4 left-0 animate-ship-5" style="animation-delay: -2s;">
+          <svg width="95" height="55" viewBox="0 0 110 55" fill="none"><rect x="10" y="35" width="85" height="12" rx="4" fill="#a855f7" stroke="#facc15" stroke-width="3"/><polygon points="50,5 85,32 15,32" fill="#06b6d4" stroke="#ffffff" stroke-width="3"/></svg>
+        </div>
+      </div>
+
+      <div class="relative z-10">
+        <!-- Start-Koordinaten Display Station 2 -->
+        <div class="bg-indigo-950/80 backdrop-blur-md border-4 border-cyan-400 rounded-2xl p-3.5 mb-4 text-center shadow-lg transform -rotate-1 hover:rotate-0 transition-transform">
+          <div class="flex items-center justify-center gap-2 text-xs font-black text-yellow-300 uppercase tracking-widest mb-1">
+            <i class="fa-solid fa-location-crosshairs text-pink-500 animate-bounce"></i>
+            <span>Start-Koordinaten</span>
+          </div>
+          <div class="flex items-center justify-center gap-2">
+            <button id="copyCoordsBtn2" title="Klicken zum Kopieren" class="font-mono text-xs sm:text-sm font-black tracking-wider text-cyan-300 bg-slate-950 hover:bg-slate-900 active:scale-95 py-2 px-3.5 rounded-xl border-2 border-yellow-400 inline-flex items-center justify-between gap-3 shadow-inner transition cursor-pointer w-full sm:w-auto">
+              <span id="xcoordsDisplay2" class="flex flex-col text-left leading-tight"></span>
+              <span class="bg-yellow-400 text-slate-950 text-xs px-2.5 py-1 rounded-lg font-black uppercase flex items-center gap-1 shadow hover:bg-yellow-300 transition">
+                <i class="fa-regular fa-copy"></i> Kopieren
+              </span>
+            </button>
+          </div>
+          <p class="text-[11px] text-slate-300 mt-1.5 font-bold">Startpunkt GCBY3GA für Peilung</p>
+        </div>
+
+        <!-- Target Display Banner (Populated via JS) -->
+        <div class="bg-indigo-950/80 backdrop-blur-md p-4 rounded-2xl border-4 border-yellow-400 mb-4 text-center shadow-lg">
+          <span class="text-[11px] font-black text-pink-400 uppercase tracking-widest block mb-0.5">
+            <i class="fa-solid fa-compass text-yellow-400 mr-1 animate-spin"></i> Die Peil-Aufgabe
+          </span>
+          <div id="targetInstruction" class="text-xl font-party font-bold text-yellow-300 my-1">
+            Peile <span id="targetDistance">---</span> Meter in Richtung <span id="targetDegree">---</span>°
+          </div>
+          <p class="text-[11px] text-cyan-300 font-semibold">Die Peilung muss von euch zusätzlich manuell ausgeführt werden. Ansonsten werdet ihr keine finale Dose finden!</p>
+        </div>
+
+        <!-- Interactive Ship's Steering Wheel Visualizer -->
+        <div class="flex flex-col items-center my-1 relative">
+          <div class="z-30 flex flex-col items-center -mb-3">
+            <div class="w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[16px] border-t-yellow-400 drop-shadow-md"></div>
+            <span class="text-[9px] font-black uppercase text-yellow-300 bg-slate-950 px-2 py-0.5 rounded border border-yellow-400 shadow-md">KURS</span>
+          </div>
+
+          <div class="relative w-60 h-60 my-1 flex items-center justify-center">
+            <div class="absolute inset-0 rounded-full border-4 border-dashed border-cyan-400/40"></div>
+
+            <div id="compassDial" class="compass-dial relative w-52 h-52 flex items-center justify-center">
+              <div class="absolute w-3.5 h-56 bg-yellow-500 border-2 border-slate-950 rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+              <div class="absolute w-3.5 h-56 bg-yellow-500 border-2 border-slate-950 rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-45"></div>
+              <div class="absolute w-3.5 h-56 bg-yellow-500 border-2 border-slate-950 rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-90"></div>
+              <div class="absolute w-3.5 h-56 bg-yellow-500 border-2 border-slate-950 rounded-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-135"></div>
+
+              <div class="w-40 h-40 rounded-full border-8 border-yellow-400 bg-slate-900 shadow-2xl relative flex items-center justify-center z-10">
+                <div class="w-28 h-28 rounded-full border-4 border-pink-500 bg-slate-950 flex items-center justify-center relative">
+                  <span class="absolute top-1 font-black text-yellow-300 text-xs">N</span>
+                  <span class="absolute right-1.5 font-black text-cyan-300 text-xs">O</span>
+                  <span class="absolute bottom-1 font-black text-pink-400 text-xs">S</span>
+                  <span class="absolute left-1.5 font-black text-emerald-300 text-xs">W</span>
+                  
+                  <div class="w-10 h-10 rounded-full bg-yellow-400 border-2 border-slate-950 flex items-center justify-center text-slate-950 font-black shadow-md z-20">
+                    <i class="fa-solid fa-anchor text-sm animate-pulse"></i>
+                  </div>
+
+                  <div id="targetMarker" class="absolute w-7 h-7 bg-pink-500 rounded-full border-2 border-yellow-300 z-30 shadow-lg flex items-center justify-center text-[11px] font-black text-white">
+                    🎯
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 w-full my-2">
+            <div class="bg-slate-950/90 p-2.5 rounded-xl border-2 border-cyan-400 text-center">
+              <span class="text-[10px] text-slate-300 uppercase font-black block">Steuer-Ausrichtung</span>
+              <span id="currentDegreeText" class="font-mono text-lg font-black text-cyan-300">0°</span>
+            </div>
+            <div class="bg-slate-950/90 p-2.5 rounded-xl border-2 border-yellow-400 text-center">
+              <span class="text-[10px] text-slate-300 uppercase font-black block">Ziel-Winkel</span>
+              <span id="targetDegreeText" class="font-mono text-lg font-black text-yellow-300">---°</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-3 mb-4">
+          <div>
+            <div class="flex justify-between text-xs font-extrabold mb-1">
+              <span class="text-slate-200">1. Kurs peilen & Lenker drehen:</span>
+              <span id="angleAccuracy" class="text-pink-400 font-black">0% Genauigkeit</span>
+            </div>
+            <input type="range" id="angleSlider" min="0" max="359" value="0" class="w-full accent-yellow-400 cursor-pointer h-3.5 bg-slate-950 rounded-lg border border-slate-700">
+          </div>
+
+          <div class="bg-slate-900/90 backdrop-blur-sm p-3.5 rounded-2xl border-2 border-slate-700">
+            <div class="flex justify-between items-center mb-1.5">
+              <span class="text-xs font-black text-slate-200">2. Strecke laufen:</span>
+              <span id="walkedDistanceText" class="font-mono font-black text-cyan-300 text-sm bg-slate-950 px-2 py-0.5 rounded border border-cyan-500">0 m</span>
+            </div>
+            <div class="w-full bg-slate-950 h-3.5 rounded-full overflow-hidden border-2 border-slate-800 mb-3">
+              <div id="distanceProgressBar" class="bg-yellow-400 h-full w-0 transition-all duration-200"></div>
+            </div>
+            <div class="flex gap-2">
+              <button id="stepBtn" class="flex-1 bg-cyan-500 hover:bg-cyan-400 active:scale-95 text-slate-950 font-black py-2.5 px-3 rounded-xl text-xs transition flex items-center justify-center gap-1.5 border-2 border-slate-950 shadow-md">
+                <i class="fa-solid fa-shoe-prints"></i>
+                <span>+100 Meter gehen</span>
+              </button>
+              <button id="resetWalkBtn" class="bg-slate-950 hover:bg-slate-800 text-slate-300 border border-slate-700 px-3 py-2 rounded-xl text-xs font-bold">
+                <i class="fa-solid fa-rotate-left"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <button id="confirmPeilBtn" class="w-full bg-yellow-400 hover:bg-yellow-300 active:scale-95 text-slate-950 font-black py-3.5 px-6 rounded-xl border-2 border-slate-950 shadow-xl transition flex items-center justify-center gap-2 text-base">
+          <i class="fa-solid fa-circle-check text-lg"></i>
+          <span>Peilung bestätigen & weiter</span>
+        </button>
+
+        <div class="text-center text-[10px] text-slate-300 font-semibold mt-2">
+          <i class="fa-solid fa-mobile-screen mr-1 text-cyan-400"></i> Nutze den Regler oder neige dein Handy.
+        </div>
+      </div>
+
+    </section>
+
+    <section id="stationQuiz2" class="hidden party-card rounded-3xl p-5 md:p-6 shadow-2xl transition-all duration-300">
+      
+      <div class="absolute inset-0 overflow-hidden pointer-events-none z-0 opacity-100 ship-glow">
+        <div class="absolute top-1 left-0 animate-ship-3" style="animation-delay: -4s;">
+          <svg width="95" height="60" viewBox="0 0 120 80" fill="none"><path d="M10 45 L105 45 L90 70 L25 70 Z" fill="#ec4899" stroke="#facc15" stroke-width="4"/><rect x="25" y="28" width="60" height="17" rx="3" fill="#06b6d4" stroke="#ffffff" stroke-width="2"/><circle cx="35" cy="56" r="3.5" fill="#facc15"/><circle cx="50" cy="56" r="3.5" fill="#facc15"/></svg>
+        </div>
+      </div>
+
+      <div class="relative z-10">
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-b from-slate-950/90 via-blue-950/90 to-cyan-950/90 border-4 border-yellow-400 p-5 mb-5 shadow-2xl text-center">
+          <div class="absolute inset-0 wave-bg pointer-events-none z-0"></div>
+          <div class="relative z-10 py-1">
+            <div class="inline-flex items-center justify-center bg-slate-950/80 backdrop-blur-md px-4 py-2 rounded-2xl border-2 border-yellow-400 mb-2 shadow-lg animate-ship-bob max-w-full">
+              <h2 class="text-lg sm:text-2xl font-party font-bold text-yellow-300 drop-shadow-[0_2px_8px_rgba(0,0,0,1)] flex items-center justify-center gap-2 leading-tight text-center">
+                <span>⚓</span>
+                <span>Wir können jetzt<br>ne echte Dose finden!</span>
+                <span>🚢</span>
+              </h2>
+            </div>
+            
+            <div class="bg-slate-950/85 backdrop-blur-md p-3 rounded-xl border border-cyan-400/50 shadow-md">
+              <p class="text-slate-100 text-base md:text-lg font-bold leading-relaxed drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
+                Die Peilung steht! Viel Spaß beim Finale! Aber da war doch noch ein anderer Name im Spiel...
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quiz Box 2 -->
+        <div class="bg-slate-900/80 backdrop-blur-md rounded-2xl p-4 border-2 border-pink-500 mb-5 shadow-inner">
+          <label for="answerInput2" class="block text-cyan-300 font-extrabold mb-2 text-center text-sm md:text-base">
+            Wie hätte die MS. - Osterwick auch noch heissen können?
+          </label>
+          
+          <input type="text" id="answerInput2" placeholder="Dein Namens-Tipp..." 
+            class="w-full bg-slate-950 border-3 border-yellow-400 rounded-xl px-4 py-3 text-center text-base font-black text-yellow-300 placeholder-slate-500 focus:outline-none focus:border-cyan-400 focus:ring-4 focus:ring-cyan-400/40 transition-all mb-3 shadow-md"
+            autocomplete="off">
+          
+          <button id="submitQuizBtn2" class="w-full bg-yellow-400 hover:bg-yellow-300 active:scale-95 text-slate-950 font-black py-3 px-6 rounded-xl border-2 border-slate-950 shadow-xl transition flex items-center justify-center gap-2 text-base text-center leading-tight">
+            <span>Antwort prüfen<br>& zum Bonus Passwort</span>
+            <i class="fa-solid fa-flag-checkered text-lg"></i>
+          </button>
+
+          <div id="quizFeedback2" class="hidden mt-3 p-3 rounded-xl text-center text-xs font-bold transition-all"></div>
+        </div>
+
+        <div class="bg-purple-950/80 backdrop-blur-md rounded-2xl p-3.5 border-2 border-pink-500 flex items-center justify-center gap-2.5 shadow-md text-center">
+          <span class="text-2xl animate-bounce shrink-0">💡</span>
+          <span class="text-xs font-black text-yellow-300 leading-snug">
+            Vor Ort gibt es noch eine weitere Namens-Variante zu entdecken!
+          </span>
+        </div>
+      </div>
+
+    </section>
+
+    <section id="stationThanks" class="hidden party-card rounded-3xl p-6 shadow-2xl text-center transition-all duration-300">
+      
+      <div class="absolute inset-0 overflow-hidden pointer-events-none z-0 opacity-100 ship-glow">
+        <div class="absolute top-1 left-0 animate-ship-8" style="animation-delay: -3s;">
+          <svg width="100" height="55" viewBox="0 0 110 65" fill="none"><path d="M10 38 L100 38 L85 58 L20 58 Z" fill="#f97316" stroke="#facc15" stroke-width="4"/><rect x="30" y="18" width="45" height="18" rx="3" fill="#06b6d4" stroke="#ffffff" stroke-width="2"/></svg>
+        </div>
+      </div>
+
+      <div class="relative z-10">
+        <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-yellow-400 border-4 border-slate-950 text-slate-950 text-4xl mb-3 shadow-xl animate-bounce">
+          🏆
+        </div>
+
+        <h2 class="text-3xl font-party font-bold text-yellow-300 mb-1">
+          Perfekt gepeilt!
+        </h2>
+        <p class="text-slate-200 text-xs font-semibold mb-4">Das Trainings-Programm wurde erfolgreich absolviert!</p>
+
+        <div class="bg-indigo-950/90 backdrop-blur-sm p-5 rounded-2xl border-4 border-yellow-400 shadow-2xl my-3 transform hover:scale-105 transition-transform">
+          <p id="thankYouMessage" class="text-lg md:text-xl font-party font-bold text-yellow-300 leading-snug">
+            Danke dass du am Smile & Peil Programm der MS. - Osterwick teilgenommen hast.
+          </p>
+        </div>
+
+        <!-- Bonus-Cache Passwort Box -->
+        <div class="bg-gradient-to-r from-pink-950/90 via-purple-950/90 to-slate-950/90 backdrop-blur-md border-4 border-pink-500 rounded-2xl p-4 my-4 shadow-xl">
+          <div class="flex items-center justify-center gap-2 text-xs font-black text-yellow-300 uppercase tracking-widest mb-1.5">
+            <i class="fa-solid fa-key text-yellow-400 animate-bounce"></i>
+            <span>Bonus-Cache Passwort</span>
+          </div>
+          <p class="text-[11px] text-slate-300 font-semibold mb-2.5">Wird für den nachfolgenden Bonus-Cache benötigt:</p>
+          <div class="flex items-center justify-center gap-2">
+            <button id="copyPasswordBtn" title="Passwort kopieren" class="w-full sm:w-auto font-mono text-base font-black tracking-widest text-yellow-300 bg-slate-950 hover:bg-slate-900 active:scale-95 py-2.5 px-4 rounded-xl border-2 border-yellow-400 inline-flex items-center justify-between gap-3 shadow-inner transition cursor-pointer">
+              <span id="bonusPasswordDisplay" class="text-pink-400">---</span>
+              <span class="bg-pink-600 text-white text-xs px-2.5 py-1 rounded-lg font-black uppercase flex items-center gap-1.5 shadow hover:bg-pink-500 transition border border-yellow-300">
+                <i class="fa-regular fa-copy"></i> Kopieren
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Result Summary -->
+        <div class="bg-slate-950/90 backdrop-blur-sm p-4 rounded-xl border-2 border-pink-500 text-left space-y-2 text-xs my-4 shadow-inner">
+          <div class="flex justify-between border-b border-slate-800 pb-1.5">
+            <span class="text-slate-400 font-semibold">Geocache-Serie:</span>
+            <span class="font-black text-pink-400">MS. - Osterwick</span>
+          </div>
+          <div class="flex justify-between border-b border-slate-800 pb-1.5">
+            <span class="text-slate-400 font-semibold">Erster Name:</span>
+            <span id="summaryHookName" class="font-black text-yellow-300"></span>
+          </div>
+          <div class="flex justify-between border-b border-slate-800 pb-1.5">
+            <span class="text-slate-400 font-semibold">Zweiter Name:</span>
+            <span id="summaryFlamschenName" class="font-black text-yellow-300"></span>
+          </div>
+          <div class="flex justify-between border-b border-slate-800 pb-1.5">
+            <span class="text-slate-400 font-semibold">Peil-Ziel:</span>
+            <span id="summaryPeil" class="font-black text-cyan-400"></span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-400 font-semibold">Spaß-Faktor:</span>
+            <span id="summarySmile" class="font-black text-yellow-300">Hat man sofort Spaß auf den Backen!</span>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2.5">
+          <button id="restartBtn" class="w-full bg-yellow-400 hover:bg-yellow-300 active:scale-95 text-slate-950 font-black py-3.5 px-4 rounded-xl border-2 border-slate-950 shadow-lg transition flex items-center justify-center gap-2 text-sm">
+            <i class="fa-solid fa-rotate-right"></i>
+            <span>Nochmal peilen</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="w-full border-t-2 border-slate-800 bg-slate-950 py-3 text-center text-[10px] text-slate-400 font-bold z-10 relative">
+    <p>Smile & Peil &bull; GCBY3GA</p>
+  </footer>
+
+  <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-slate-900 border-4 border-yellow-400 text-white px-4 py-2.5 rounded-2xl shadow-2xl transition-all duration-300 opacity-0 pointer-events-none z-50 flex items-center gap-2 text-xs font-black max-w-[90vw]">
+    <i id="toastIcon" class="fa-solid fa-circle-info text-yellow-400 text-base"></i>
+    <span id="toastText">Meldung</span>
+  </div>
+
+  <script>
+    // Helper to decode obfuscated UTF-8 Base64 strings (hides data in source view)
+    function _d(b64) {
+      try {
+        return decodeURIComponent(escape(atob(b64)));
+      } catch (e) {
+        return atob(b64);
+      }
+    }
+
+    // Audio Engine State
+    let musicPlaying = false;
+    let discoLoop = null;
+    let synthKick = null;
+    let synthHat = null;
+    let synthBass1 = null; 
+    let synthBass2 = null; 
+    let synthBass3 = null; 
+    let synthChords = null;
+
+    let currentStation = 1;
+
+    // App State (Populated dynamically during runtime)
+    let validatedHookName = "";
+    let validatedFlamschenName = "";
+    const smileValue = 100;
+    const peilTask = { distance: 0, degree: 0 };
+    let currentWalkedDistance = 0;
+
+    // DOM Elements
+    const musicToggleBtn = document.getElementById('musicToggleBtn');
+    const musicIcon = document.getElementById('musicIcon');
+    const musicText = document.getElementById('musicText');
+
+    const answerInput = document.getElementById('answerInput');
+    const submitQuizBtn = document.getElementById('submitQuizBtn');
+    const quizFeedback = document.getElementById('quizFeedback');
+
+    const answerInput2 = document.getElementById('answerInput2');
+    const submitQuizBtn2 = document.getElementById('submitQuizBtn2');
+    const quizFeedback2 = document.getElementById('quizFeedback2');
+
+    const stationQuiz = document.getElementById('stationQuiz');
+    const stationPeil = document.getElementById('stationPeil');
+    const stationQuiz2 = document.getElementById('stationQuiz2');
+    const stationThanks = document.getElementById('stationThanks');
+
+    const compassDial = document.getElementById('compassDial');
+    const angleSlider = document.getElementById('angleSlider');
+    const currentDegreeText = document.getElementById('currentDegreeText');
+    const targetDegreeText = document.getElementById('targetDegreeText');
+    const angleAccuracy = document.getElementById('angleAccuracy');
+    const walkedDistanceText = document.getElementById('walkedDistanceText');
+    const distanceProgressBar = document.getElementById('distanceProgressBar');
+    const stepBtn = document.getElementById('stepBtn');
+    const resetWalkBtn = document.getElementById('resetWalkBtn');
+    const confirmPeilBtn = document.getElementById('confirmPeilBtn');
+
+    const summaryHookName = document.getElementById('summaryHookName');
+    const summaryFlamschenName = document.getElementById('summaryFlamschenName');
+    const summaryPeil = document.getElementById('summaryPeil');
+    const summarySmile = document.getElementById('summarySmile');
+    const restartBtn = document.getElementById('restartBtn');
+    const copyCoordsBtn = document.getElementById('copyCoordsBtn');
+    const copyCoordsBtn2 = document.getElementById('copyCoordsBtn2');
+    const copyPasswordBtn = document.getElementById('copyPasswordBtn');
+    const bonusPasswordDisplay = document.getElementById('bonusPasswordDisplay');
+
+    // Decode and render secret values dynamically into the DOM
+    function initSecretValues() {
+      const line1 = _d("TiA1McKwIDU3LjE4Mic="); // N 51° 57.182'
+      const line2 = _d("RSA3wrAgMTIuODQ0Jw==");  // E 7° 12.844'
+      const coordsHtml = `<span>${line1}</span><span>${line2}</span>`;
+
+      const coordsDisp1 = document.getElementById('xcoordsDisplay');
+      const coordsDisp2 = document.getElementById('xcoordsDisplay2');
+      if (coordsDisp1) coordsDisp1.innerHTML = coordsHtml;
+      if (coordsDisp2) coordsDisp2.innerHTML = coordsHtml;
+
+      peilTask.distance = parseInt(_d("ODIz")); // 823
+      peilTask.degree = parseInt(_d("MjY2"));   // 266
+
+      const tDist = document.getElementById('targetDistance');
+      const tDeg = document.getElementById('targetDegree');
+      const tDegTxt = document.getElementById('targetDegreeText');
+      const tMarker = document.getElementById('targetMarker');
+
+      if (tDist) tDist.textContent = peilTask.distance;
+      if (tDeg) tDeg.textContent = peilTask.degree;
+      if (tDegTxt) tDegTxt.textContent = peilTask.degree + "°";
+      if (tMarker) tMarker.style.transform = `rotate(${peilTask.degree}deg) translateY(-44px)`;
+
+      validatedHookName = _d("TVMuIC0gU8O8a2VyaG9vaw==");
+      validatedFlamschenName = _d("TVMuIC0gQ29lc2ZlbGQtTMO8ZGluZ2hhdXNlbg==");
+
+      if (bonusPasswordDisplay) bonusPasswordDisplay.textContent = _d("TVMtT1NUIzczMTItWDI2Ni1CTlM=");
+
+      updateWalkProgress();
+    }
+
+    function setupCopyCoordsListener(btn) {
+      if (!btn) return;
+      btn.addEventListener('click', () => {
+        triggerVibration();
+        const coords = _d("TiA1McKwIDU3LjE4MicgRSA3wrAgMTIuODQ0Jw==");
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(coords).then(() => {
+            showToast("Koordinaten kopiert!", "success");
+          }).catch(() => {
+            copyTextFallback(coords);
+          });
+        } else {
+          copyTextFallback(coords);
+        }
+      });
+    }
+
+    setupCopyCoordsListener(copyCoordsBtn);
+    setupCopyCoordsListener(copyCoordsBtn2);
+
+    if (copyPasswordBtn) {
+      copyPasswordBtn.addEventListener('click', () => {
+        triggerVibration();
+        const pwd = bonusPasswordDisplay ? bonusPasswordDisplay.textContent.trim() : _d("TVMtT1NUIzczMTItWDI2Ni1CTlM=");
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(pwd).then(() => {
+            showToast("Bonus-Passwort kopiert! 🔑", "success");
+          }).catch(() => {
+            copyTextFallback(pwd);
+          });
+        } else {
+          copyTextFallback(pwd);
+        }
+      });
+    }
+
+    function copyTextFallback(text) {
+      const tempInput = document.createElement('input');
+      tempInput.value = text;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempInput);
+      showToast("Kopiert!", "success");
+    }
+
+    // Sound Engine
+    async function togglePartyMusic() {
+      await Tone.start();
+
+      if (!musicPlaying) {
+        if (!discoLoop) {
+          synthKick = new Tone.MembraneSynth({
+            pitchDecay: 0.05, octaves: 8, oscillator: { type: "sine" }, envelope: { attack: 0.001, decay: 0.4, sustain: 0.01, release: 0.4 }
+          }).toDestination();
+          synthKick.volume.value = -4;
+
+          synthHat = new Tone.MetalSynth({
+            frequency: 250, envelope: { attack: 0.001, decay: 0.1, release: 0.01 }, harmonicity: 5.1, modulationIndex: 32, resonance: 4000, octaves: 1.5
+          }).toDestination();
+          synthHat.volume.value = -18;
+
+          synthBass1 = new Tone.MonoSynth({
+            oscillator: { type: "sawtooth" }, filter: { Q: 3, type: "lowpass", frequency: 1000 }, envelope: { attack: 0.01, decay: 0.2, sustain: 0.2, release: 0.2 }
+          }).toDestination();
+          synthBass1.volume.value = -8;
+
+          synthBass2 = new Tone.MonoSynth({
+            oscillator: { type: "square" }, filter: { Q: 6, type: "lowpass", frequency: 1800 }, envelope: { attack: 0.005, decay: 0.15, sustain: 0.1, release: 0.1 }
+          }).toDestination();
+          synthBass2.volume.value = -10;
+
+          synthBass3 = new Tone.MonoSynth({
+            oscillator: { type: "triangle" }, filter: { Q: 4, type: "bandpass", frequency: 2200 }, envelope: { attack: 0.01, decay: 0.25, sustain: 0.3, release: 0.2 }
+          }).toDestination();
+          synthBass3.volume.value = -7;
+
+          synthChords = new Tone.PolySynth(Tone.Synth, {
+            oscillator: { type: "triangle" }, envelope: { attack: 0.02, decay: 0.15, sustain: 0.1, release: 0.2 }
+          }).toDestination();
+          synthChords.volume.value = -14;
+
+          const bass1Notes = ["C2", "C3", "C2", "C3", "Eb2", "Eb3", "F2", "G2"];
+          const bass2Notes = ["C3", "C2", "Eb3", "C3", "F3", "Eb3", "G3", "Bb2"];
+          const bass3Notes = ["C4", "C3", "Bb3", "G3", "C4", "Eb4", "F4", "G4"];
+          const chordProg = [["C4", "E4", "G4", "B4"], ["C4", "Eb4", "G4", "Bb4"], ["F4", "A4", "C5"], ["G4", "B4", "D5"]];
+
+          let step = 0;
+          const safeTrigger = (synth, note, duration, time) => {
+            try { synth.triggerAttackRelease(note, duration, time); } catch (err) {}
+          };
+
+          discoLoop = Tone.Transport.scheduleRepeat((time) => {
+            const beat16 = step % 16;
+            if (beat16 % 4 === 0) safeTrigger(synthKick, "C1", "8n", time);
+            if (beat16 % 4 === 2) safeTrigger(synthHat, "16n", time);
+
+            if (beat16 % 2 === 0) {
+              const note1 = bass1Notes[Math.floor(step / 2) % bass1Notes.length];
+              safeTrigger(synthBass1, note1, "16n", time);
+            }
+
+            if (currentStation >= 2 && beat16 % 2 === 1) {
+              const note2 = bass2Notes[step % bass2Notes.length];
+              safeTrigger(synthBass2, note2, "16n", time);
+            }
+
+            if (currentStation >= 4 && (beat16 % 4 === 1 || beat16 % 4 === 3)) {
+              const note3 = bass3Notes[step % bass3Notes.length];
+              safeTrigger(synthBass3, note3, "16n", time);
+            }
+
+            if (beat16 === 2 || beat16 === 6 || beat16 === 10 || beat16 === 14) {
+              const chord = chordProg[Math.floor(step / 8) % chordProg.length];
+              safeTrigger(synthChords, chord, "16n", time);
+            }
+
+            step++;
+          }, "16n");
+
+          Tone.Transport.bpm.value = 126;
+        }
+
+        Tone.Transport.position = 0;
+        Tone.Transport.start();
+        musicPlaying = true;
+        musicText.textContent = `Disco: St. ${currentStation} 🎵`;
+        musicToggleBtn.classList.remove('bg-pink-600');
+        musicToggleBtn.classList.add('bg-yellow-400', 'text-slate-950');
+      } else {
+        Tone.Transport.stop();
+        musicPlaying = false;
+        musicText.textContent = "Disco-Sound: AUS";
+        musicToggleBtn.classList.remove('bg-yellow-400', 'text-slate-950');
+        musicToggleBtn.classList.add('bg-pink-600', 'text-white');
+      }
+    }
+
+    musicToggleBtn.addEventListener('click', togglePartyMusic);
+
+    function goToStation(stationNum) {
+      currentStation = stationNum;
+
+      stationQuiz.classList.add('hidden');
+      stationPeil.classList.add('hidden');
+      stationQuiz2.classList.add('hidden');
+      stationThanks.classList.add('hidden');
+
+      if (stationNum === 1) {
+        stationQuiz.classList.remove('hidden');
+      } else if (stationNum === 2) {
+        stationPeil.classList.remove('hidden');
+        initPeilTask();
+        if (musicPlaying) {
+          showToast("🎸 Bassline #2 freigeschaltet!", "info");
+          musicText.textContent = "Disco: St. 2 🎸";
+        }
+      } else if (stationNum === 3) {
+        stationQuiz2.classList.remove('hidden');
+        if (musicPlaying) {
+          musicText.textContent = "Disco: St. 3 🎶";
+        }
+      } else if (stationNum === 4) {
+        stationThanks.classList.remove('hidden');
+        setupThankYouScreen();
+        triggerPartyConfetti();
+        if (musicPlaying) {
+          showToast("🔥 Maximale Finale Disco-Bassline unlocked!", "success");
+          musicText.textContent = "Disco: Finale 🔥";
+        }
+      }
+    }
+
+    function playBeep(freq = 440, duration = 0.1) {
+      if (!musicPlaying) return;
+      try {
+        const synth = new Tone.Synth().toDestination();
+        synth.volume.value = -8;
+        synth.triggerAttackRelease(freq, duration);
+      } catch (e) {}
+    }
+
+    // Quiz 1 Validator (Obfuscated stem checking)
+    function validateQuizAnswer(input) {
+      if (!input) return false;
+      const normalized = input.trim().toLowerCase()
+        .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+        .replace(/[^a-z0-9]/g, '');
+
+      const validStems = ["c3Vla2VyaG9vaw==", "c3VlZGVyaG9vaw==", "c3VrZXJob29r", "c3VrZXI=", "c3Vla2Vy"].map(_d);
+      return validStems.some(stem => normalized.includes(stem));
+    }
+
+    // Quiz 2 Validator (Obfuscated stems)
+    function validateQuiz2Answer(input) {
+      if (!input) return false;
+      const normalized = input.trim().toLowerCase()
+        .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+        .replace(/[^a-z0-9]/g, '');
+
+      const stem1 = _d("Y29lc2ZlbGQ=");
+      const stem2a = _d("bHVlZGluZw==");
+      const stem2b = _d("bHVkaW5n");
+
+      const hasCoesfeld = normalized.includes(stem1);
+      const hasLueding = normalized.includes(stem2a) || normalized.includes(stem2b);
+
+      return hasCoesfeld && hasLueding;
+    }
+
+    submitQuizBtn.addEventListener('click', () => {
+      triggerVibration();
+      const inputVal = answerInput.value;
+
+      if (validateQuizAnswer(inputVal)) {
+        validatedHookName = inputVal.toLowerCase().includes('ms') ? inputVal.trim() : `MS. - ${inputVal.trim()}`;
+        showQuizFeedback(quizFeedback, true, `Super! MS. - Sükerhook ist exakt richtig! Auf geht's zur Peilung! 🎉`);
+        playBeep(587, 0.2);
+        showToast("Antwort akzeptiert!", "success");
+
+        setTimeout(() => {
+          goToStation(2);
+        }, 1200);
+      } else {
+        showQuizFeedback(quizFeedback, false, `Vor Ort sieht man sofort was hier ins Feld eingegeben werden muss!`);
+        playBeep(220, 0.2);
+        showToast("Bitte überprüfe deine Antwort", "warning");
+      }
+    });
+
+    answerInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') submitQuizBtn.click();
+    });
+
+    submitQuizBtn2.addEventListener('click', () => {
+      triggerVibration();
+      const inputVal = answerInput2.value;
+
+      if (/\d/.test(inputVal)) {
+        showQuizFeedback(quizFeedback2, false, `Wir suchen 2 Orte nacheinander geschrieben! 😉`);
+        playBeep(220, 0.2);
+        showToast("Überprüfe die Namens-Eingabe", "warning");
+        return;
+      }
+
+      if (validateQuiz2Answer(inputVal)) {
+        validatedFlamschenName = inputVal.toLowerCase().includes('ms') ? inputVal.trim() : `MS. - ${inputVal.trim()}`;
+        showQuizFeedback(quizFeedback2, true, `Spitze! MS. - Coesfeld-Lüdinghausen ist goldrichtig! Auf ins Finale! 🎉`);
+        playBeep(659, 0.2);
+        showToast("Antwort akzeptiert!", "success");
+
+        setTimeout(() => {
+          goToStation(4);
+        }, 1200);
+      } else {
+        showQuizFeedback(quizFeedback2, false, `Vor Ort sieht man sofort was hier ins Feld eingegeben werden muss!`);
+        playBeep(220, 0.2);
+        showToast("Überprüfe die Namens-Eingabe", "warning");
+      }
+    });
+
+    answerInput2.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') submitQuizBtn2.click();
+    });
+
+    function showQuizFeedback(el, isSuccess, text) {
+      el.classList.remove('hidden', 'bg-red-500/20', 'text-red-300', 'bg-emerald-500/20', 'text-emerald-300');
+      if (isSuccess) {
+        el.classList.add('bg-emerald-500/20', 'text-emerald-300', 'border', 'border-emerald-500/40');
+      } else {
+        el.classList.add('bg-red-500/20', 'text-red-300', 'border', 'border-red-500/40');
+      }
+      el.textContent = text;
+    }
+
+    // Peilung & Kompass Logik
+    function initPeilTask() {
+      currentWalkedDistance = 0;
+      updateWalkProgress();
+      updateCompassAngle(parseInt(angleSlider.value));
+    }
+
+    function updateCompassAngle(angle) {
+      compassDial.style.transform = `rotate(${-angle}deg)`;
+      currentDegreeText.textContent = `${angle}°`;
+
+      let diff = Math.abs(angle - peilTask.degree);
+      if (diff > 180) diff = 360 - diff;
+
+      const accuracy = Math.max(0, 100 - Math.round((diff / 180) * 100));
+      angleAccuracy.textContent = `${accuracy}% Genauigkeit`;
+
+      if (diff <= 5) {
+        angleAccuracy.className = "text-yellow-300 font-black animate-pulse";
+      } else if (diff <= 20) {
+        angleAccuracy.className = "text-pink-400 font-bold";
+      } else {
+        angleAccuracy.className = "text-slate-300 font-medium";
+      }
+    }
+
+    angleSlider.addEventListener('input', (e) => {
+      updateCompassAngle(parseInt(e.target.value));
+    });
+
+    if (window.DeviceOrientationEvent) {
+      window.addEventListener('deviceorientation', (e) => {
+        if (e.alpha !== null && !stationPeil.classList.contains('hidden')) {
+          const heading = Math.round(360 - e.alpha);
+          angleSlider.value = heading;
+          updateCompassAngle(heading);
+        }
+      });
+    }
+
+    // Walking Simulation
+    stepBtn.addEventListener('click', () => {
+      triggerVibration();
+
+      const currentDeg = parseInt(angleSlider.value);
+      let diff = Math.abs(currentDeg - peilTask.degree);
+      if (diff > 180) diff = 360 - diff;
+
+      if (diff > 20) {
+        playBeep(200, 0.2);
+        showToast(`Erst Kurs auf ${peilTask.degree}° ausrichten! Sonst läufst du falsch.`, "warning");
+        return;
+      }
+
+      playBeep(400, 0.05);
+      if (currentWalkedDistance < peilTask.distance) {
+        currentWalkedDistance = Math.min(peilTask.distance, currentWalkedDistance + 100);
+        updateWalkProgress();
+      } else {
+        showToast("Ziel-Distanz bereits erreicht!", "info");
+      }
+    });
+
+    resetWalkBtn.addEventListener('click', () => {
+      triggerVibration();
+      currentWalkedDistance = 0;
+      updateWalkProgress();
+    });
+
+    function updateWalkProgress() {
+      walkedDistanceText.textContent = `${currentWalkedDistance} / ${peilTask.distance} m`;
+      const pct = peilTask.distance > 0 ? Math.min(100, (currentWalkedDistance / peilTask.distance) * 100) : 0;
+      distanceProgressBar.style.width = `${pct}%`;
+    }
+
+    confirmPeilBtn.addEventListener('click', () => {
+      triggerVibration();
+      const currentDeg = parseInt(angleSlider.value);
+      let diff = Math.abs(currentDeg - peilTask.degree);
+      if (diff > 180) diff = 360 - diff;
+
+      if (diff > 20) {
+        playBeep(200, 0.2);
+        showToast(`Der Winkel weicht noch zu stark von ${peilTask.degree}° ab!`, "warning");
+        return;
+      }
+
+      if (currentWalkedDistance < peilTask.distance) {
+        playBeep(250, 0.2);
+        showToast(`Laufe noch ${(peilTask.distance - currentWalkedDistance)} Meter weiter!`, "warning");
+        return;
+      }
+
+      playBeep(880, 0.4);
+      showToast("Peilung perfekt abgeschlossen! Weiter zum Bonus-Rätsel...", "success");
+
+      setTimeout(() => {
+        goToStation(3);
+      }, 800);
+    });
+
+    function setupThankYouScreen() {
+      summaryHookName.textContent = validatedHookName;
+      summaryFlamschenName.textContent = validatedFlamschenName;
+      summaryPeil.textContent = `${peilTask.distance} Meter erreicht`;
+      summarySmile.textContent = `${smileValue}% Lächeln`;
+    }
+
+    restartBtn.addEventListener('click', () => {
+      triggerVibration();
+      answerInput.value = '';
+      answerInput2.value = '';
+      quizFeedback.classList.add('hidden');
+      quizFeedback2.classList.add('hidden');
+      goToStation(1);
+    });
+
+    function triggerVibration() {
+      if ('vibrate' in navigator) {
+        navigator.vibrate(35);
+      }
+    }
+
+    function showToast(message, type = "info") {
+      const toast = document.getElementById('toast');
+      const toastText = document.getElementById('toastText');
+      const toastIcon = document.getElementById('toastIcon');
+
+      toastText.textContent = message;
+
+      if (type === "success") {
+        toastIcon.className = "fa-solid fa-circle-check text-yellow-300 text-lg";
+      } else if (type === "warning") {
+        toastIcon.className = "fa-solid fa-triangle-exclamation text-pink-400 text-lg";
+      } else {
+        toastIcon.className = "fa-solid fa-circle-info text-cyan-300 text-lg";
+      }
+
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2500);
+    }
+
+    function triggerPartyConfetti() {
+      if (typeof confetti === 'function') {
+        confetti({ particleCount: 90, spread: 80, origin: { y: 0.6 } });
+        setTimeout(() => {
+          confetti({ particleCount: 60, angle: 60, spread: 55, origin: { x: 0 } });
+          confetti({ particleCount: 60, angle: 120, spread: 55, origin: { x: 1 } });
+        }, 300);
+      }
+    }
+
+    // Initialize obfuscated secrets on page load
+    window.onload = function() {
+      initSecretValues();
+    };
+  </script>
+</body>
+</html>
